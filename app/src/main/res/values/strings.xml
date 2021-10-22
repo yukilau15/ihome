@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">iHome</string>
+
+    <string name="card_header">NFN CARD</string>
+    <string name="card_number_sample">XXXX XXXX XXXX XXXX</string>
+    <string name="card_validity_label">VALID THRU</string>
+    <string name="card_validity_sample">MM/YY</string>
+    <string name="card_name_sample">CARDHOLDER</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string-array name="catogery">
+        <item>Catogery</item>
+        <item>Cabinets</item>
+        <item>Chairs</item>
+        <item>Sofas</item>
+        <item>Tables</item>
+    </string-array>
+</resources>
