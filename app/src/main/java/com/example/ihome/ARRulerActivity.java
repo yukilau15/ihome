@@ -147,10 +147,8 @@ public class ARRulerActivity extends AppCompatActivity {
                         .show();
 
                 return true;
-            default:
-                return super.onOptionsItemSelected(item);
-                //return false;
         }
+        return super.onOptionsItemSelected(item);
     }
 
     private void addNodeToScene(ArFragment fragment, Anchor anchor, Renderable renderable) {
@@ -183,8 +181,10 @@ public class ARRulerActivity extends AppCompatActivity {
 
         if (!hitResultList.isEmpty()) {
             targetColor(android.graphics.Color.BLUE);
+            addmarkerBtn.setEnabled(true);
         } else {
             targetColor(android.graphics.Color.BLACK);
+            addmarkerBtn.setEnabled(false);
         }
 
         for (Node node : viewRenderableList) {
