@@ -32,8 +32,7 @@ import java.util.HashMap;
 
 public class CheckoutActivity extends AppCompatActivity {
 
-    private String orderid, orderitem, addtime, adddate;
-    private String totalprice;
+    private String totalprice, orderid, orderitem, addtime, adddate;
 
     private TextInputEditText addressEt;
     private TextView totalTv;
@@ -95,32 +94,12 @@ public class CheckoutActivity extends AppCompatActivity {
                     String method = radioButton.getText().toString();
 
                     if (method.equals("Credit / Debit Card")) {
-                        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Card")
-                                .child(firebaseUser.getUid());
-
-                        reference.addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                                if (!dataSnapshot.exists()) {
-                                    Toast.makeText(getApplicationContext(),
-                                            "Please add a debit or credit card\nto complete your purchase",
-                                            Toast.LENGTH_SHORT)
-                                            .show();
-
-                                    Intent i = new Intent(getApplicationContext(), CardActivity.class);
-                                    startActivity(i);
-                                } else {
-                                    confirmorder(method, address);
-                                    updateaddress(address);
-                                }
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                            }
-                        });
+                        Intent i = new Intent(getApplicationContext(), CardActivity.class);
+                        i.putExtra("order", "" + orderitem);
+                        i.putExtra("subtotal", "" + totalprice);
+                        i.putExtra("method", "" + method);
+                        i.putExtra("address", "" + address);
+                        startActivity(i);
                     } else {
                         confirmorder(method, address);
                         updateaddress(address);

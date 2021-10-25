@@ -18,27 +18,29 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".CardActivity"></activity>
-        <activity android:name=".PurchaseActivity" />
         <activity
             android:name=".ProfileActivity"
-            android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".DetailActivity"
-            android:parentActivityName=".MainActivity"
+            android:name=".PurchaseActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".CartActivity"
+            android:name=".CardActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".CheckoutActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ARRulerActivity"
+            android:name=".CartActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ARModelActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ARRulerActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".DetailActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".MainActivity"

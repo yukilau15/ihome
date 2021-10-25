@@ -2,10 +2,6 @@ package com.example.ihome.Fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,8 +12,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+
 import com.bumptech.glide.Glide;
-import com.example.ihome.CardActivity;
 import com.example.ihome.Model.User;
 import com.example.ihome.ProfileActivity;
 import com.example.ihome.PurchaseActivity;
@@ -59,7 +57,6 @@ public class ProfileFragment extends Fragment {
 
         arrayList.add("My Purchases");
         arrayList.add("My Profile");
-        arrayList.add("My Card");
 
         usernameTv = view.findViewById(R.id.username);
         emailTv = view.findViewById(R.id.email);
@@ -79,9 +76,6 @@ public class ProfileFragment extends Fragment {
                     startActivity(i);
                 } else if (position == 1) {
                     Intent i = new Intent(getContext(), ProfileActivity.class);
-                    startActivity(i);
-                } else if (position == 2) {
-                    Intent i = new Intent(getContext(), CardActivity.class);
                     startActivity(i);
                 }
             }
@@ -109,7 +103,7 @@ public class ProfileFragment extends Fragment {
                 usernameTv.setText(user.getUsername());
                 emailTv.setText(user.getEmail());
 
-                Glide.with(getContext()).load(user.getImage()).into(profileIv);
+                Glide.with(getActivity()).load(user.getImage()).into(profileIv);
             }
 
             @Override
