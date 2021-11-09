@@ -1,8 +1,5 @@
 package com.example.ihome;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -11,6 +8,9 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.cepheuen.elegantnumberbutton.view.ElegantNumberButton;
 import com.example.ihome.Model.Item;
@@ -134,10 +134,10 @@ public class DetailActivity extends AppCompatActivity {
 
     public void saveitem() {
         if (itemsave.getTag().equals("save")) {
-            FirebaseDatabase.getInstance().getReference().child("Saves")
+            FirebaseDatabase.getInstance().getReference().child("Save")
                     .child(firebaseUser.getUid()).child(id).setValue(true);
         } else {
-            FirebaseDatabase.getInstance().getReference().child("Saves")
+            FirebaseDatabase.getInstance().getReference().child("Save")
                     .child(firebaseUser.getUid()).child(id).removeValue();
         }
     }

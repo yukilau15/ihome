@@ -91,7 +91,7 @@ public class ProfileActivity extends AppCompatActivity {
 
                 if (TextUtils.isEmpty(fullname)) {
                     Toast.makeText(getApplicationContext(),
-                            "Please enter fullname",
+                            "Please enter full name",
                             Toast.LENGTH_SHORT)
                             .show();
                 } else if (TextUtils.isEmpty(phone)) {
@@ -101,7 +101,7 @@ public class ProfileActivity extends AppCompatActivity {
                             .show();
                 } else if (!phone.matches(phonePattern)) {
                     Toast.makeText(getApplicationContext(),
-                            "Please enter a valid phone number\n(Enter in numerals only)",
+                            "Please enter a valid phone number\n(Only digits allowed)",
                             Toast.LENGTH_SHORT)
                             .show();
                 } else if (TextUtils.isEmpty(address)) {

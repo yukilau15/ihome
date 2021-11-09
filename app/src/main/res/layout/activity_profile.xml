@@ -94,7 +94,6 @@
                 android:ems="10"
                 android:enabled="false"
                 android:includeFontPadding="true"
-                android:inputType="textVisiblePassword|textNoSuggestions"
                 android:paddingStart="14dp" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -116,7 +115,6 @@
                 android:ems="10"
                 android:enabled="false"
                 android:includeFontPadding="true"
-                android:inputType="textVisiblePassword|textNoSuggestions"
                 android:paddingStart="14dp" />
 
         </com.google.android.material.textfield.TextInputLayout>

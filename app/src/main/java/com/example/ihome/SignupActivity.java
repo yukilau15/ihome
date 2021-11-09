@@ -17,8 +17,12 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 
@@ -85,56 +89,77 @@ public class SignupActivity extends AppCompatActivity {
     }
 
     public void signup(final String username, final String email, final String password) {
-        mAuth
-                .createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            FirebaseUser firebaseUser = mAuth.getCurrentUser();
-                            String userid = firebaseUser.getUid();
+        Query usernameExist = FirebaseDatabase.getInstance().getReference().child("User")
+                .orderByChild("username").equalTo(username);
 
-                            firebaseUser.sendEmailVerification().addOnSuccessListener(new OnSuccessListener<Void>() {
+        usernameExist.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.getChildrenCount() > 0) {
+                    Toast.makeText(getApplicationContext(),
+                            "Username already exists\nplease try with another one",
+                            Toast.LENGTH_SHORT)
+                            .show();
+                } else {
+                    mAuth.createUserWithEmailAndPassword(email, password)
+                            .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                 @Override
-                                public void onSuccess(Void aVoid) {
-                                    databaseReference = FirebaseDatabase.getInstance().getReference()
-                                            .child("User").child(userid);
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    if (task.isSuccessful()) {
+                                        FirebaseUser firebaseUser = mAuth.getCurrentUser();
+                                        String userid = firebaseUser.getUid();
 
-                                    HashMap<String, Object> map = new HashMap<>();
-                                    map.put("uid", userid);
-                                    map.put("username", username.toLowerCase());
-                                    map.put("email", email.toLowerCase());
-                                    map.put("fullname", "");
-                                    map.put("phone", "");
-                                    map.put("address", "");
-                                    map.put("image", "https://firebasestorage.googleapis.com/v0/b/ihome-68a79.appspot.com/o/uploads%2Fuser.png?alt=media&token=921ab32a-4a28-49e6-a4d9-c9d52b6191d8");
+                                        firebaseUser.sendEmailVerification().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                databaseReference = FirebaseDatabase.getInstance().getReference()
+                                                        .child("User").child(userid);
 
-                                    databaseReference.setValue(map).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            if (task.isSuccessful()) {
-                                                Toast.makeText(getApplicationContext(),
-                                                        "Sign up successfully\nplease verify your email",
-                                                        Toast.LENGTH_SHORT)
-                                                        .show();
+                                                HashMap<String, Object> map = new HashMap<>();
+                                                map.put("uid", userid);
+                                                map.put("username", username.toLowerCase());
+                                                map.put("email", email.toLowerCase());
+                                                map.put("fullname", "");
+                                                map.put("phone", "");
+                                                map.put("address", "");
+                                                map.put("image", "https://firebasestorage.googleapis.com/v0/b/ihome-68a79.appspot.com/o/uploads%2Fuser.png?alt=media&token=921ab32a-4a28-49e6-a4d9-c9d52b6191d8");
 
-                                                Intent i = new Intent(getApplicationContext(),
-                                                        SigninActivity.class);
-                                                startActivity(i);
-                                                finish();
+                                                databaseReference.setValue(map).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                        if (task.isSuccessful()) {
+                                                            Toast.makeText(getApplicationContext(),
+                                                                    "Sign up successfully\nplease verify your email",
+                                                                    Toast.LENGTH_SHORT)
+                                                                    .show();
+
+                                                            mAuth.signOut();
+
+                                                            Intent i = new Intent(getApplicationContext(),
+                                                                    SigninActivity.class);
+                                                            startActivity(i);
+                                                            finish();
+                                                        }
+                                                    }
+                                                });
                                             }
-                                        }
-                                    });
+                                        });
+                                    } else {
+                                        Toast.makeText(getApplicationContext(),
+                                                "Email already exist",
+                                                Toast.LENGTH_SHORT)
+                                                .show();
+                                    }
                                 }
                             });
-                        } else {
-                            Toast.makeText(getApplicationContext(),
-                                    "Sign up failed",
-                                    Toast.LENGTH_SHORT)
-                                    .show();
-                        }
-                    }
-                });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     public void signinBtn(View view) {

@@ -103,6 +103,10 @@ public class ProfileFragment extends Fragment {
                 usernameTv.setText(user.getUsername());
                 emailTv.setText(user.getEmail());
 
+                if (getActivity() == null) {
+                    return;
+                }
+
                 Glide.with(getActivity()).load(user.getImage()).into(profileIv);
             }
 
@@ -116,7 +120,7 @@ public class ProfileFragment extends Fragment {
     public void signout() {
         mAuth.signOut();
 
-        Intent i = new Intent(getContext(), StartActivity.class);
+        Intent i = new Intent(getActivity(), StartActivity.class);
         startActivity(i);
         getActivity().finish();
 

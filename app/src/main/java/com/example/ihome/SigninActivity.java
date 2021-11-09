@@ -79,8 +79,7 @@ public class SigninActivity extends AppCompatActivity {
                                         Toast.LENGTH_SHORT)
                                         .show();
 
-                                Intent i = new Intent(getApplicationContext(),
-                                        MainActivity.class);
+                                Intent i = new Intent(getApplicationContext(), MainActivity.class);
                                 startActivity(i);
                                 finish();
                             } else {
@@ -115,7 +114,7 @@ public class SigninActivity extends AppCompatActivity {
                 String email = resetEt.getText().toString();
 
                 if (TextUtils.isEmpty(email)) {
-                    Toast.makeText(view.getContext(),
+                    Toast.makeText(getApplicationContext(),
                             "Please enter email",
                             Toast.LENGTH_SHORT)
                             .show();
@@ -125,23 +124,22 @@ public class SigninActivity extends AppCompatActivity {
                             Toast.LENGTH_SHORT)
                             .show();
                 } else {
-                    mAuth.sendPasswordResetEmail(email)
-                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if (task.isSuccessful()) {
-                                        Toast.makeText(getApplicationContext(),
-                                                "Email sent to " + email,
-                                                Toast.LENGTH_SHORT)
-                                                .show();
-                                    } else {
-                                        Toast.makeText(getApplicationContext(),
-                                                "Error sending email\ncouldn't find your account",
-                                                Toast.LENGTH_SHORT)
-                                                .show();
-                                    }
-                                }
-                            });
+                    mAuth.sendPasswordResetEmail(email).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(getApplicationContext(),
+                                        "Email sent to\n" + email,
+                                        Toast.LENGTH_SHORT)
+                                        .show();
+                            } else {
+                                Toast.makeText(getApplicationContext(),
+                                        "Error sending email\ncouldn't find your account",
+                                        Toast.LENGTH_SHORT)
+                                        .show();
+                            }
+                        }
+                    });
                 }
             }
         });

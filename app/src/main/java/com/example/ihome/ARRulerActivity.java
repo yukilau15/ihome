@@ -29,6 +29,7 @@ import com.google.ar.sceneform.rendering.Renderable;
 import com.google.ar.sceneform.rendering.ShapeFactory;
 import com.google.ar.sceneform.rendering.ViewRenderable;
 import com.google.ar.sceneform.ux.ArFragment;
+import com.google.ar.sceneform.ux.TransformableNode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,16 +38,16 @@ public class ARRulerActivity extends AppCompatActivity {
 
     private String unit;
 
-    private TextView textTv;
+    private TextView distanceTv;
     private ImageView targetIv, backIv;
     private Button addmarkerBtn, clearBtn;
 
     private ArFragment arFragment;
 
-    private ModelRenderable modelRenderable;
+    private ModelRenderable blueSphereRenderable ;
 
     private List<AnchorNode> anchorNodeList = new ArrayList<>();
-    private List<Node> viewRenderableList = new ArrayList<>();
+    private List<Node> textViewRenderableList = new ArrayList<>();
     private List<HitResult> hitResultList = new ArrayList<>();
 
     @Override
@@ -78,8 +79,8 @@ public class ARRulerActivity extends AppCompatActivity {
                         arFragment.getView().getPivotY());
 
                 if (!hitResultList.isEmpty()) {
-                    Anchor ar = hitResultList.get(0).createAnchor();
-                    addNodeToScene(arFragment, ar, modelRenderable);
+                    Anchor anchor = hitResultList.get(0).createAnchor();
+                    addNodeToScene(arFragment, anchor, blueSphereRenderable);
                     calculateDistance();
                 }
             }
@@ -148,26 +149,8 @@ public class ARRulerActivity extends AppCompatActivity {
 
                 return true;
         }
+
         return super.onOptionsItemSelected(item);
-    }
-
-    private void addNodeToScene(ArFragment fragment, Anchor anchor, Renderable renderable) {
-        AnchorNode anchorNode = new AnchorNode(anchor);
-        anchorNode.setRenderable(renderable);
-        anchorNodeList.add(anchorNode);
-
-        fragment.getArSceneView().getScene().addChild(anchorNode);
-    }
-
-    private void makeSphere() {
-        MaterialFactory
-                .makeOpaqueWithColor(getApplicationContext(), new Color(android.graphics.Color.BLUE))
-                .thenAccept(material -> {
-                    modelRenderable = ShapeFactory.makeSphere(0.01f,
-                            new Vector3(0f, 0f, 0f), material);
-                    modelRenderable.setShadowCaster(false);
-                    modelRenderable.setShadowReceiver(false);
-                });
     }
 
     private void onUpdateFrame(FrameTime frameTime) {
@@ -187,7 +170,7 @@ public class ARRulerActivity extends AppCompatActivity {
             addmarkerBtn.setEnabled(false);
         }
 
-        for (Node node : viewRenderableList) {
+        for (Node node : textViewRenderableList) {
             updateOrientationTowardsCamera(node);
         }
     }
@@ -195,6 +178,37 @@ public class ARRulerActivity extends AppCompatActivity {
     private void targetColor(int color) {
         targetIv = findViewById(R.id.target);
         targetIv.setColorFilter(color);
+    }
+
+    private void makeSphere() {
+        MaterialFactory.makeOpaqueWithColor(getApplicationContext(),
+                new Color(android.graphics.Color.BLUE))
+                .thenAccept(
+                        material -> {
+                            blueSphereRenderable = ShapeFactory.makeSphere(0.01f,
+                                    new Vector3(0.0f, 0.0f, 0.0f), material);
+                            blueSphereRenderable.setShadowCaster(false);
+                            blueSphereRenderable.setShadowReceiver(false);
+                        });
+    }
+
+    /*private void addNodeToScene(ArFragment arFragment, Anchor anchor, Renderable renderable) {
+        AnchorNode anchorNode = new AnchorNode(anchor);
+        anchorNode.setRenderable(renderable);
+        anchorNodeList.add(anchorNode);
+
+        arFragment.getArSceneView().getScene().addChild(anchorNode);
+    }*/
+
+    private void addNodeToScene(ArFragment arFragment, Anchor anchor, Renderable renderable) {
+        AnchorNode anchorNode = new AnchorNode(anchor);
+        TransformableNode node = new TransformableNode(arFragment.getTransformationSystem());
+        node.setParent(anchorNode);
+        node.setRenderable(renderable);
+        node.select();
+        anchorNodeList.add(anchorNode);
+
+        arFragment.getArSceneView().getScene().addChild(anchorNode);
     }
 
     private void updateOrientationTowardsCamera(Node node) {
@@ -210,9 +224,11 @@ public class ARRulerActivity extends AppCompatActivity {
             float distance = distanceBetweenAnchors(
                     anchorNodeList.get(anchorNodeList.size() - 1).getAnchor(),
                     anchorNodeList.get(anchorNodeList.size() - 2).getAnchor());
+
             Vector3 midPos = midPosBetweenAnchors(
                     anchorNodeList.get(anchorNodeList.size() - 1).getAnchor(),
                     anchorNodeList.get(anchorNodeList.size() - 2).getAnchor());
+
             makeTextRenderable(distance, midPos);
         }
     }
@@ -241,16 +257,16 @@ public class ARRulerActivity extends AppCompatActivity {
     }
 
     private void addDistanceText(ViewRenderable renderable, float distance, Vector3 worldPos) {
-        textTv = renderable.getView().findViewById(R.id.card);
+        distanceTv = renderable.getView().findViewById(R.id.card);
 
         if (unit == "cm") {
-            textTv.setText(String.format("%.2f", mtocm(distance)) + "cm");
+            distanceTv.setText(String.format("%.2f", mtocm(distance)) + "cm");
         } else if (unit == "ft") {
-            textTv.setText(String.format("%.2f", mtoft(distance)) + "ft");
+            distanceTv.setText(String.format("%.2f", mtoft(distance)) + "ft");
         } else if (unit == "in") {
-            textTv.setText(String.format("%.2f", mtoin(distance)) + "in");
+            distanceTv.setText(String.format("%.2f", mtoin(distance)) + "in");
         } else {
-            textTv.setText(String.format("%.2f", distance) + "m");
+            distanceTv.setText(String.format("%.2f", distance) + "m");
         }
 
         Node node = new Node();
@@ -258,8 +274,9 @@ public class ARRulerActivity extends AppCompatActivity {
         node.setWorldPosition(worldPos);
         renderable.setShadowCaster(false);
         renderable.setShadowReceiver(false);
+        textViewRenderableList.add(node);
+
         arFragment.getArSceneView().getScene().addChild(node);
-        viewRenderableList.add(node);
     }
 
     static double mtocm(float metre) {
@@ -283,11 +300,11 @@ public class ARRulerActivity extends AppCompatActivity {
                 ((AnchorNode) node).getAnchor().detach();
             }
 
-            for (Node textView : viewRenderableList) {
+            for (Node textView : textViewRenderableList) {
                 textView.setParent(null);
             }
 
-            viewRenderableList = new ArrayList<>();
+            textViewRenderableList = new ArrayList<>();
             anchorNodeList = new ArrayList<>();
         }
     }
